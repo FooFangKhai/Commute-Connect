@@ -1,0 +1,59 @@
+//
+//  WebViewController.swift
+//  MPSD_ASG1
+//
+//  Created by Nicholas Dylan on 26/07/2023.
+//
+
+import UIKit
+import WebKit
+
+class WebViewController: UIViewController {
+// Section 1: Create a private WKWebView instance to display the web content
+    private let webView: WKWebView = {
+        let preferences = WKWebpagePreferences()
+        preferences.allowsContentJavaScript = true
+        let configuration = WKWebViewConfiguration()
+        configuration.defaultWebpagePreferences = preferences
+        let webView = WKWebView(frame: .zero, configuration: configuration)
+        return webView
+    }()
+    
+    private let url: URL
+    
+    // Section 2: Using the custom initializer, initialize the URL and title
+    init(url: URL, title: String){
+        self.url = url
+        super.init(nibName: nil, bundle: nil)
+        self.title = title
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError()
+    }
+    
+    // Section 3: Add the webView as a subview over the main
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        view.addSubview(webView)
+        webView.load(URLRequest(url: url))
+        configButtons()
+    }
+    
+    // Section 4: Ensure that the webView covers the whole screen or full screen
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        webView.frame = view.bounds
+    }
+    
+    // Section 5: Configure a "Done" button to be displayed on the left top bar
+    private func configButtons() {
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Done", style: .done, target: self, action: #selector(didTapDone))
+    }
+    
+    // Section 6: Whenever the "Done" button is pressed, run this function
+    @objc private func didTapDone() {
+        dismiss(animated: true, completion: nil)
+    }
+    
+}

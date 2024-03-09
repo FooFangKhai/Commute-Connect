@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>751913922192-9i22q5v70j21fv22aiv50p9j9itfkbft.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.751913922192-9i22q5v70j21fv22aiv50p9j9itfkbft</string>
+	<key>API_KEY</key>
+	<string>AIzaSyCB3SFZpumNSCplUQPlyxCOMJgyZkKDoT4</string>
+	<key>GCM_SENDER_ID</key>
+	<string>751913922192</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>UOW.MPSD-ASG1</string>
+	<key>PROJECT_ID</key>
+	<string>ios-transit</string>
+	<key>STORAGE_BUCKET</key>
+	<string>ios-transit.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:751913922192:ios:bbda73cb301bf663b17215</string>
+	<key>DATABASE_URL</key>
+	<string>https://ios-transit-default-rtdb.firebaseio.com</string>
+</dict>
+</plist>

@@ -1,0 +1,68 @@
+import UIKit
+import FirebaseDatabase
+
+class ContactUsViewController: UIViewController {
+    
+    // Section 1: Declaring UI elements
+    @IBOutlet weak var newsletter: UISwitch!
+    @IBOutlet weak var dob: UIDatePicker!
+    @IBOutlet weak var name: UITextField!
+    @IBOutlet weak var email: UITextField!
+    @IBOutlet weak var gender: UIButton!
+    @IBOutlet weak var message: UITextField!
+    @IBOutlet weak var nationality: UISegmentedControl!
+    
+    // Section 2: Create a constant to reference the Firebase Realtime Database
+    private let db = Database.database().reference()
+    
+    // Section 3: Once the view controller's view is loaded into memory, the function to set up gender selection pop up button will be called
+    override func viewDidLoad() {
+        setupGender()
+    }
+    
+    // Section 4: Function to convert the Date object to a String format in order to be shown in the Realtime Database
+    func dateToString() -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        let dateString = dateFormatter.string(from: dob.date)
+        return dateString
+    }
+    
+    // Section 5: Function to get the selected gender value
+    func getButtonTitle() -> String? {
+        let buttonTitle = gender.title(for: .normal)
+        return buttonTitle
+    }
+    
+    // Section 6: Will be called when "Submit" button is tapped, this creates a dictionary to store the user's inquiry details, after that, it will save the inquiry data to the Firebase Realtime Database and after that return the user to the previous screen
+    @IBAction func addEntry(_ sender: Any) { 
+        let inquiry: [String: Any] = [
+            "name": name.text!,
+            "email": email.text!,
+            "date_of_birth": dateToString(),
+            "gender": getButtonTitle()!,
+            "nationality": nationality.selectedSegmentIndex,
+            "newsletter": newsletter.isOn,
+            "message": message.text!
+        ]
+        
+        db.child("Inquiry/\(name.text!)_\(Int.random(in: 0..<1000))").setValue(inquiry)
+        
+        navigationController?.popViewController(animated: true)
+    }
+    
+    // Section 7: Function to set up the gender selection in the pop up button
+    func setupGender() {
+        let option = { (action: UIAction) in print(action.title) }
+        
+        gender.menu = UIMenu(children: [
+            UIAction(title: "Male", handler: option),
+            UIAction(title: "Female", handler: option),
+            UIAction(title: "Others", handler: option),
+            UIAction(title: "Prefer not to say", handler: option)
+        ])
+
+        gender.showsMenuAsPrimaryAction = true
+        gender.changesSelectionAsPrimaryAction = true
+    }
+}

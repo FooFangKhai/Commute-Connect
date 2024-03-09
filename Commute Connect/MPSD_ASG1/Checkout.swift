@@ -1,0 +1,143 @@
+//
+//  Checkout.swift
+//  MPSD_ASG1
+//
+//  Created by Wong Yen Chik on 03/08/2023.
+//
+import LocalAuthentication
+import UIKit
+import AVKit
+import AVFoundation
+class Checkout: UIViewController {
+
+    @IBOutlet weak var lbl: UILabel!
+    @IBOutlet weak var price: UILabel!
+    
+    @IBAction func stepper(_ sender: UIStepper) {
+        let integerValue = Int(sender.value)
+            lbl.text = String(integerValue)
+        let integValue = Int(sender.value)
+            price.text = String(integValue*5)
+    }
+    
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        let buttonHeight: CGFloat = 50
+        let verticalPadding: CGFloat = 20
+        let button = UIButton(frame: CGRect(x: 0, y: 0, width: view.bounds.width, height: 50))
+        view.addSubview(button)
+
+        // Calculate the y-coordinate to position the button at the bottom of the view
+        let buttonYPosition = view.bounds.height - buttonHeight - verticalPadding
+        button.frame.origin.y = buttonYPosition
+
+        button.setTitle("Authorize", for: .normal)
+        button.backgroundColor = .systemGreen
+        button.addTarget(self, action: #selector(didTapButton), for: .touchUpInside)
+
+        // Do any additional setup after loading the view.
+    }
+    
+    
+     
+     
+     // Function to handle button tap
+     @objc func buttonTapped() {
+         print("Button tapped!")
+     }
+
+     
+     @objc func didTapButton(){
+         let context = LAContext()
+         var error: NSError? = nil
+         if context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error){
+             let reason = "Please authorize with touch id!"
+             context.evaluatePolicy(.deviceOwnerAuthenticationWithBiometrics,localizedReason: reason) { [weak self] success, error in
+                 DispatchQueue.main.async {
+                     guard success, error == nil else{
+                         let alert = UIAlertController(title: "Failed to Authenticate", message: "Please try again", preferredStyle: .alert)
+                         alert.addAction(UIAlertAction(title: "Dismiss", style: .cancel, handler: nil))
+                         self?.present(alert, animated: true)
+                         return
+                     }
+                     // Create the UIViewController
+                     let vc = UIViewController()
+                     vc.title = "Payment Page"
+                     vc.view.backgroundColor = UIColor(white: 1.0, alpha: 1.0)
+
+                     // Create a label above the multiple choice button
+                     let label = UILabel()
+                     label.text = "Select an payment option:"
+                     label.textAlignment = .center
+                     label.translatesAutoresizingMaskIntoConstraints = false
+                     vc.view.addSubview(label)
+
+                     // Create a UIButton for the "Pay now" button
+                     let payButton = UIButton(type: .system)
+                     payButton.setTitle("Online Banking", for: .normal)
+                     payButton.backgroundColor = .systemBlue
+                     payButton.setTitleColor(.white, for: .normal)
+                     payButton.addTarget(self, action: #selector(self?.buttonTapped), for: .touchUpInside)
+                     payButton.translatesAutoresizingMaskIntoConstraints = false
+                     vc.view.addSubview(payButton)
+
+                     // Create a UIButton for the multiple choice button
+                     let choiceButton = UIButton(type: .system)
+                     choiceButton.setTitle("Tngo", for: .normal)
+                     choiceButton.backgroundColor = .systemGreen
+                     choiceButton.setTitleColor(.white, for: .normal)
+                     // Add your target and action for the multiple choice button as needed
+                     choiceButton.translatesAutoresizingMaskIntoConstraints = false
+                     vc.view.addSubview(choiceButton)
+
+                     // Adding constraints for the label
+                     let labelTopConstraint = NSLayoutConstraint(item: label, attribute: .bottom, relatedBy: .equal, toItem: payButton, attribute: .top, multiplier: 1.0, constant: -70.0) // Adjust the constant as needed to set the spacing between the label and the payButton
+                     let labelCenterXConstraint = NSLayoutConstraint(item: label, attribute: .centerX, relatedBy: .equal, toItem: vc.view, attribute: .centerX, multiplier: 1.0, constant: 0.0)
+                     vc.view.addConstraints([labelTopConstraint, labelCenterXConstraint])
+
+                     // Adding constraints for the buttons
+                     let centerXConstraint = NSLayoutConstraint(item: payButton, attribute: .centerX, relatedBy: .equal, toItem: vc.view, attribute: .centerX, multiplier: 1.0, constant: 0.0)
+                     let centerYConstraint = NSLayoutConstraint(item: payButton, attribute: .centerY, relatedBy: .equal, toItem: vc.view, attribute: .centerY, multiplier: 1.0, constant: 0.0)
+                     vc.view.addConstraints([centerXConstraint, centerYConstraint])
+
+                     let choiceButtonTopConstraint = NSLayoutConstraint(item: choiceButton, attribute: .bottom, relatedBy: .equal, toItem: payButton, attribute: .top, multiplier: 1.0, constant: -20.0) // Adjust the constant as needed to set the spacing between the buttons
+                     let choiceButtonCenterXConstraint = NSLayoutConstraint(item: choiceButton, attribute: .centerX, relatedBy: .equal, toItem: payButton, attribute: .centerX, multiplier: 1.0, constant: 0.0)
+                     vc.view.addConstraints([choiceButtonTopConstraint, choiceButtonCenterXConstraint])
+
+                     // Present the UIViewController with the buttons inside a UINavigationController
+                     self?.present(UINavigationController(rootViewController: vc), animated: true, completion: nil)
+
+                 }
+             }
+         }
+         else{
+             let alert = UIAlertController(title: "Unavailable", message: "You can use this in future", preferredStyle: .alert)
+             alert.addAction(UIAlertAction(title: "Dismiss", style: .cancel, handler: nil))
+             present(alert, animated: true)
+         }
+     }
+     
+ //    @IBAction func btn_click(_ sender: UIButton) {
+ //        showToast(message: "Hello Test")
+ //    }
+     override func viewDidAppear(_ animated: Bool) {
+         super.viewDidAppear(animated)
+
+         let player = AVPlayer(url: URL(fileURLWithPath: Bundle.main.path(forResource: "pexels_videos_3934 (1080p)", ofType: "mp4")!))
+         let layer = AVPlayerLayer(player: player)
+
+         // Set the frame to cover the top half of the view
+         let halfHeight = view.bounds.height / 3
+         layer.frame = CGRect(x: 0, y: 0, width: view.bounds.width, height: halfHeight)
+
+         layer.videoGravity = .resizeAspectFill
+
+         // Insert the video layer below all other subviews
+         view.layer.insertSublayer(layer, at: 0)
+
+         player.volume = 0
+         player.play()
+     }
+
+ }
